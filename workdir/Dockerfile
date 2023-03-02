@@ -1,20 +1,12 @@
 # 
 FROM python:3.9
 
+
 # 
 WORKDIR /workdir
 
-# 
-RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.0-1_all.deb
-
-# 
-RUN sudo dpkg -i cuda-keyring_1.0-1_all.deb
-
-# 
-RUN sudo apt-get update
-
-# 
-RUN sudo apt-get -y install cuda
+#
+FROM nvidia/cuda:12.1-runtime
 
 # 
 RUN pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu117

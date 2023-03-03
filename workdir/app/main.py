@@ -11,8 +11,6 @@ import pathlib
 from fastapi.middleware.cors import CORSMiddleware
 
 
-device = torch.device('cuda:0')
-torch.cuda.set_device(0)
 
 plt = platform.system()
 if plt == 'Linux': pathlib.WindowsPath = pathlib.PosixPath

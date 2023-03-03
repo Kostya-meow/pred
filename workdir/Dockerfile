@@ -5,9 +5,6 @@ FROM python:3.9
 # 
 WORKDIR /workdir
 
-#
-FROM nvidia/cuda:12.1-runtime
-
 # 
 RUN pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu117
 

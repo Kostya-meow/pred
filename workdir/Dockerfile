@@ -6,9 +6,6 @@ FROM python:3.9
 WORKDIR /workdir
 
 # 
-RUN pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu117
-
-# 
 COPY ./requirements.txt /workdir/requirements.txt
 
 # 

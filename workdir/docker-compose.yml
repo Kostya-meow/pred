@@ -14,10 +14,3 @@ services:
       - 1234:1234
     networks:
       - sibiriana-net
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 0
-              capabilities: [gpu]

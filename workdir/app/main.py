@@ -1,26 +1,32 @@
-from fastapi import FastAPI
-from pydantic import BaseModel
-import pickle
-import pandas as pd
-from fastai.vision.all import *
-from fastapi import FastAPI, UploadFile, File, Body, Depends, HTTPException, status
-import shutil
-import os
-from fastapi.security import OAuth2PasswordBearer
-import pathlib
-from fastapi import FastAPI, Body, Depends, HTTPException, status
+from fastapi import FastAPI, Body, Depends, HTTPException, status, File
 from fastapi.security import OAuth2PasswordBearer
 
+api_keys = [
+    "akljnv13bvi2vfo0b0bw"
+]  # This is encrypted in the database
 
-plt = platform.system()
-if plt == 'Linux': pathlib.WindowsPath = pathlib.PosixPath
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")  # use token authentication
 
+
+def api_key_auth(api_key: str = Depends(oauth2_scheme)):
+    if api_key not in api_keys:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Forbidden"
+        )
 
 
 app = FastAPI()
 
 
-@app.post('/predict')
+@app.get("/test", dependencies=[Depends(api_key_auth)])
+def add_post() -> dict:
+    return {
+        "data": "You used a valid API key"
+    }
+
+
+@app.post('/predict', dependencies=[Depends(api_key_auth)])
 
 async def root(file: bytes = File()):
 
@@ -52,4 +58,3 @@ async def root(file: bytes = File()):
         "medium": result[0],
         "tech": tech
         }
-

@@ -1,33 +1,32 @@
-from fastapi import FastAPI
-from pydantic import BaseModel
-import pickle
-import pandas as pd
-from fastai.vision.all import *
-from fastapi import FastAPI, UploadFile, File, Body, Depends, HTTPException, status
-import shutil
-import os
+from fastapi import FastAPI, Body, Depends, HTTPException, status, File
 from fastapi.security import OAuth2PasswordBearer
-import pathlib
-from fastapi.middleware.cors import CORSMiddleware
+
+api_keys = [
+    "akljnv13bvi2vfo0b0bw"
+]  # This is encrypted in the database
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")  # use token authentication
 
 
-
-plt = platform.system()
-if plt == 'Linux': pathlib.WindowsPath = pathlib.PosixPath
+def api_key_auth(api_key: str = Depends(oauth2_scheme)):
+    if api_key not in api_keys:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Forbidden"
+        )
 
 
 app = FastAPI()
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+
+@app.get("/test", dependencies=[Depends(api_key_auth)])
+def add_post() -> dict:
+    return {
+        "data": "You used a valid API key"
+    }
 
 
-@app.post('/predict')
+@app.post('/predict', dependencies=[Depends(api_key_auth)])
 
 async def root(file: bytes = File()):
 
@@ -40,25 +39,22 @@ async def root(file: bytes = File()):
     perc_pred = round(float(perc_pred[perc_pred.find('(')+1:perc_pred.find(')')]),2)
 
     if result[0] == 'бронза':
-        id_value = 3
+        tech = 'литье'
     elif result[0] == 'глина':
-        id_value = 11
+        tech = 'лепка'
     elif result[0] == 'железо':
-        id_value = 9
+        tech = 'ловка'
     elif result[0] == 'камень':
-        id_value = 1
+        tech = 'скалывание'
     elif result[0] == 'керамика':
-        id_value = 2
+        tech = 'лепка'
     elif result[0] == 'кость':
-        id_value = 12
+        tech = 'лезьба'
     elif result[0] == 'медь':
-        id_value = 10
+        tech = 'литье'
 
     return {
-        "confidence":perc_pred,
-        "medium": {
-            "value": id_value,
-            "label": result[0].title()
-        }}
-
-    
+        "confidence": perc_pred,
+        "medium": result[0],
+        "tech": tech
+        }

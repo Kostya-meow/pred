@@ -21,7 +21,7 @@ COPY ./app /workdir/app
 COPY ./model/ /workdir/app
 
 #
-COPY ./templates/ /workdir/app
+COPY ./templates/ /workdir
 
 # 
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "1234"]

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>File Upload</title>
+    <style>
+        input[type=file],
+        input[type=text],
+        input[type=submit] {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        input[type=submit] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        input[type=submit]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>File Upload</h1>
+    <form action="/classify" method="post" enctype="multipart/form-data">
+        <label for="file">Choose a file:</label><br>
+        <input type="file" id="file" name="file"><br>
+        <label for="api_key">API Key:</label><br>
+        <input type="text" id="api_key" name="api_key"><br><br>
+        <input type="submit" value="Submit">
+    </form>
+    <div id="result">
+        {% if material %}
+        <h2>Result:</h2>
+        <p>Материал: {{ material }}<br>
+        Техника: {{ technique }}<br>
+        Вероятность: {{ probability }}</p>
+        {% endif %}
+    </div>
+    
+</body>
+</html>
